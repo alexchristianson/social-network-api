@@ -1,7 +1,7 @@
 const { Thoughts, Users } = require('../models');
 
-const ThoughtsController = {
-  // get all Thoughts
+const thoughtsController = {
+  // get all thoughts
   getAllThoughts(req, res) {
     Thoughts.find()
       .sort({ createdAt: -1 })
@@ -13,6 +13,7 @@ const ThoughtsController = {
         res.status(500).json(err);
       });
   },
+  // get one thought by id
   getThoughtsById(req, res) {
     Thoughts.findOne({ _id: req.params.ThoughtId })
       .then((dbThoughtsData) => {
@@ -26,6 +27,7 @@ const ThoughtsController = {
         res.status(500).json(err);
       });
   },
+  // create new thought
   createThoughts(req, res) {
     Thoughts.create(req.body)
       .then((dbThoughtsData) => {
@@ -46,6 +48,7 @@ const ThoughtsController = {
         res.status(500).json(err);
       });
   },
+  // update a thought
   updateThoughts(req, res) {
     Thoughts.findOneAndUpdate({ _id: req.params.ThoughtId }, { $set: req.body }, { runValidators: true, new: true })
       .then((dbThoughtsData) => {
@@ -59,23 +62,24 @@ const ThoughtsController = {
         res.status(500).json(err);
       });
   },
-  // delete Thoughts
+
+  // delete thought
   deleteThoughts(req, res) {
-    Thoughts.findOneAndRemove({ _id: req.params.ThoughtId })
+    Thoughts.findOneAndRemove({ _id: req.params.thoughtId })
       .then((dbThoughtsData) => {
         if (!dbThoughtsData) {
           return res.status(404).json({ message: 'No Thoughts with this id!' });
         }
-        // remove Thoughts id from user's `Thoughts` field
+        // remove thoughtId from user's `Thoughts` field
         return Users.findOneAndUpdate(
-          { Thought: req.params.ThoughtId },
-          { $pull: { Thoughts: req.params.ThoughtId } },
+          { Thought: req.params.thoughtId },
+          { $pull: { Thoughts: req.params.thoughtId } },
           { new: true }
         );
       })
       .then((dbUserData) => {
         if (!dbUserData) {
-          return res.status(404).json({ message: 'Thoughts created but no user with this id!' });
+          return res.status(404).json({ message: 'No user with this id!' });
         }
         res.json({ message: 'Thoughts successfully deleted!' });
       })
@@ -84,7 +88,8 @@ const ThoughtsController = {
         res.status(500).json(err);
       });
   },
-  // add a reaction to a Thoughts
+
+  // add a reaction 
   addReaction(req, res) {
     Thoughts.findOneAndUpdate(
       { _id: req.params.ThoughtId },
@@ -102,7 +107,8 @@ const ThoughtsController = {
         res.status(500).json(err);
       });
   },
-  // remove reaction from a Thoughts
+
+  // remove reaction 
   removeReaction(req, res) {
     Thoughts.findOneAndUpdate(
       { _id: req.params.ThoughtsId },
@@ -122,4 +128,4 @@ const ThoughtsController = {
   },
 };
 
-module.exports = ThoughtsController;
+module.exports = thoughtsController;

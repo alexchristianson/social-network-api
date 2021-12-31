@@ -13,8 +13,9 @@ const userController = {
         res.status(500).json(err);
       });
   },
+
   // get single user by id
-  getUsersById(req, res) {
+  getUserById(req, res) {
     Users.findOne({ _id: req.params.userId })
       .select('-__v')
       .populate('friends')
@@ -30,8 +31,9 @@ const userController = {
         res.status(500).json(err);
       });
   },
+
   // create a new user
-  createUsers(req, res) {
+  createUser(req, res) {
     Users.create(req.body)
       .then((dbUserData) => {
         res.json(dbUserData);
@@ -41,8 +43,9 @@ const userController = {
         res.status(500).json(err);
       });
   },
+
   // update a user
-  updateUsers(req, res) {
+  updateUser(req, res) {
     Users.findOneAndUpdate(
       { _id: req.params.userId },
       {
@@ -64,8 +67,9 @@ const userController = {
         res.status(500).json(err);
       });
   },
+
   // delete user
-  deleteUsers(req, res) {
+  deleteUser(req, res) {
     Users.findOneAndDelete({ _id: req.params.userId })
       .then((dbUserData) => {
         if (!dbUserData) {
@@ -81,6 +85,7 @@ const userController = {
         res.status(500).json(err);
       });
   },
+
   // add friend to friend list
   addFriend(req, res) {
     Users.findOneAndUpdate({ _id: req.params.userId }, { $addToSet: { friends: req.params.friendId } }, { new: true })
@@ -95,6 +100,7 @@ const userController = {
         res.status(500).json(err);
       });
   },
+
   // remove friend from friend list
   removeFriend(req, res) {
     Users.findOneAndUpdate({ _id: req.params.userId }, { $pull: { friends: req.params.friendId } }, { new: true })
